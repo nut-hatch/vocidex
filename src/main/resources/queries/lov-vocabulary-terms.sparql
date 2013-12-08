@@ -5,8 +5,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 # ?term A term (class, property or datatype)
-# ?vocab The vocabulary that defines the term, according to LOV metadata
-SELECT ?term ?vocab {
+SELECT DISTINCT ?term {
 
   # Find all vocabularies, with the attached
   # preferred namespace URI, from LOV metadata
@@ -15,28 +14,10 @@ SELECT ?term ?vocab {
       vann:preferredNamespaceUri ?ns
   }
 
-  # Now find all terms mentioned in the aggregated vocabulary graphs
-  # We use DISTINCT to get only one match for terms that are defined
-  # for example as both rdfs:Class and owl:Class
-  {
-    SELECT DISTINCT ?vocab ?term {
-      GRAPH ?vocab {
-        { ?term a rdfs:Class }
-        UNION
-        { ?term a owl:Class }
-        UNION
-        { ?term a rdf:Property }
-        UNION
-        { ?term a owl:DatatypeProperty }
-        UNION
-        { ?term a owl:ObjectProperty }
-        UNION
-        { ?term a owl:AnnotationProperty }
-        UNION
-        { ?term a rdfs:Datatype }
+  # Cope with class, datatype, property and instance
+  GRAPH ?vocab {
+      ?term a ?type
         FILTER isURI(?term)
-      }
-    }
   }
 
   # Keep only those terms that start with the vocabulary's

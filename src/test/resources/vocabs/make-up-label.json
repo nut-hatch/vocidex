@@ -4,7 +4,11 @@
       "type": "class",
       "uri": "http://www.w3.org/ns/org#Organization",
       "localName": "Organization",
-      "label": "organization"
+      "primLabels": [
+        {
+            "value": "organization"
+        }
+      ]
     }
   ],
   "properties": [],

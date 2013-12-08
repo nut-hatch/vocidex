@@ -72,6 +72,19 @@ public class SPARQLRunner {
 		if (n == null || !n.isLiteral()) return null;
 		return n.asLiteral().getLexicalForm();
 	}
+	
+	public ResultSet getResultSet(String queryFile, String paramVariable, Resource paramValue) {
+		Query query = getQuery(queryFile);
+		QuerySolutionMap args = new QuerySolutionMap();
+		if (paramVariable != null && paramValue != null) {
+			args.add(paramVariable, paramValue);
+		}
+		args.add("prefLang", ResourceFactory.createPlainLiteral("en"));
+		QueryExecution qe = QueryExecutionFactory.create(query, dataset, args);
+		ResultSet rs = qe.execSelect();
+		//qe.close();
+		return rs;
+	}
 
 	public QuerySolution getOneSolution(String queryFile, String paramVariable, Resource paramValue) {
 		Query query = getQuery(queryFile);
@@ -79,6 +92,7 @@ public class SPARQLRunner {
 		if (paramVariable != null && paramValue != null) {
 			args.add(paramVariable, paramValue);
 		}
+		args.add("prefLang", ResourceFactory.createPlainLiteral("en"));
 		QueryExecution qe = QueryExecutionFactory.create(query, dataset, args);
 		ResultSet rs = qe.execSelect();
 		if (!rs.hasNext()) return null;

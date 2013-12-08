@@ -6,16 +6,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.deri.vocidex.SPARQLRunner;
 
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.OWL;
 
 public class PropertyDescriber extends TermDescriber {
 	public final static String TYPE = "property";
 
-	private final DatatypeIdentifier datatypeIdentifier;
+	//private final DatatypeIdentifier datatypeIdentifier;
 	
 	public PropertyDescriber(SPARQLRunner source, String prefix) {
 		super(source, prefix);
-		this.datatypeIdentifier = new DatatypeIdentifier();
+		//this.datatypeIdentifier = new DatatypeIdentifier();
 	}
 	
 	public Collection<Resource> getDomains(Resource property) {
@@ -44,18 +43,18 @@ public class PropertyDescriber extends TermDescriber {
 	
 	public void describe(Resource property, ObjectNode descriptionRoot) {
 		super.describe(TYPE, property, descriptionRoot);
-		putURIArrayWithLabels(descriptionRoot, "domains", getDomains(property), labelDescriber);
-		putURIArrayWithLabels(descriptionRoot, "ranges", getRanges(property), labelDescriber, datatypeIdentifier);
-		putURIArrayWithLabels(descriptionRoot, "superproperties", getSuperproperties(property), labelDescriber);
-		putURIArrayWithLabels(descriptionRoot, "inverseProperties", getInverseProperties(property), labelDescriber);
-		putURIArrayWithLabels(descriptionRoot, "equivalentProperties", getEquivalentProperties(property), labelDescriber);
-		Collection<Resource> types = getTypes(property);
-		putBoolean(descriptionRoot, "isAnnotationProperty", types.contains(OWL.AnnotationProperty));
-		putBoolean(descriptionRoot, "isObjectProperty", types.contains(OWL.ObjectProperty));
-		putBoolean(descriptionRoot, "isDatatypeProperty", types.contains(OWL.DatatypeProperty));
-		putBoolean(descriptionRoot, "isFunctionalProperty", types.contains(OWL.FunctionalProperty));
-		putBoolean(descriptionRoot, "isInverseFunctionalProperty", types.contains(OWL.InverseFunctionalProperty));
-		putBoolean(descriptionRoot, "isTransitiveProperty", types.contains(OWL.TransitiveProperty));
-		putBoolean(descriptionRoot, "isSymmetricProperty", types.contains(OWL.SymmetricProperty));
+//		putURIArrayWithLabels(descriptionRoot, "domains", getDomains(property), labelDescriber);
+//		putURIArrayWithLabels(descriptionRoot, "ranges", getRanges(property), labelDescriber, datatypeIdentifier);
+//		putURIArrayWithLabels(descriptionRoot, "superproperties", getSuperproperties(property), labelDescriber);
+//		putURIArrayWithLabels(descriptionRoot, "inverseProperties", getInverseProperties(property), labelDescriber);
+//		putURIArrayWithLabels(descriptionRoot, "equivalentProperties", getEquivalentProperties(property), labelDescriber);
+//		Collection<Resource> types = getTypes(property);
+//		putBoolean(descriptionRoot, "isAnnotationProperty", types.contains(OWL.AnnotationProperty));
+//		putBoolean(descriptionRoot, "isObjectProperty", types.contains(OWL.ObjectProperty));
+//		putBoolean(descriptionRoot, "isDatatypeProperty", types.contains(OWL.DatatypeProperty));
+//		putBoolean(descriptionRoot, "isFunctionalProperty", types.contains(OWL.FunctionalProperty));
+//		putBoolean(descriptionRoot, "isInverseFunctionalProperty", types.contains(OWL.InverseFunctionalProperty));
+//		putBoolean(descriptionRoot, "isTransitiveProperty", types.contains(OWL.TransitiveProperty));
+//		putBoolean(descriptionRoot, "isSymmetricProperty", types.contains(OWL.SymmetricProperty));
 	}
 }

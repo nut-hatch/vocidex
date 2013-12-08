@@ -19,6 +19,9 @@ public class JSONHelper {
 	public static ObjectNode createObject() {
 		return mapper.createObjectNode();
 	}
+	public static ArrayNode createArray() {
+		return mapper.createArrayNode();
+	}
 
 	public static String asJsonString(JsonNode jsonNode) {
 		try {
@@ -40,16 +43,23 @@ public class JSONHelper {
 		}
 	}
 	public void putString(ObjectNode json, String key, String value) {
-		if (value != null) {
+		if (value != null && value.length()>0) {
 			json.put(key, value);
 		}
 	}
+	
 	
 	public void putBoolean(ObjectNode json, String key, boolean value) {
 		if (value) {
 			json.put(key, value);
 		}
 	}
+	
+	public void putURIArray(ObjectNode json, String key, ArrayNode array) {
+		if (array.size() > 0) {
+			json.put(key, array);
+		}
+	}	
 	
 	public void putURIArray(ObjectNode json, String key, Collection<Resource> uris) {
 		ArrayNode array = mapper.createArrayNode();

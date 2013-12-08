@@ -1,17 +1,10 @@
 {
   "vocabulary": {
     "properties": {
-      "label": {
-        "type": "string",
-        "boost": 3.0
-      },
 	  "prefix":{
         "type":"multi_field",
         "fields":{
-          "prefix":{
-            "type":"string",
-			"boost": 3.0
-          },
+          "prefix":{ "type":"string", "boost": 4.0 },
           "autocomplete":{
             "search_analyzer" : "autocomplete_ngram_search",
             "index_analyzer" : "autocomplete_ngram_index",
@@ -30,6 +23,18 @@
             "index_analyzer" : "autocomplete_ngram_index",
             "type":"string"
           }
+        }
+      },
+      "titles" : {
+        "properties" : {
+          "value" : {"type" : "string", "boost": 4.0},
+          "lang" : {"type" : "string", "index": "no" }
+        }
+      },
+      "descriptions" : {
+        "properties" : {
+          "value" : {"type" : "string", "boost": 2.0},
+          "lang" : {"type" : "string", "index": "no" }
         }
       }
     }

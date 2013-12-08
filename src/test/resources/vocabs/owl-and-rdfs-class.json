@@ -4,7 +4,13 @@
       "type": "class",
       "uri": "http://www.w3.org/ns/org#Organization",
       "localName": "Organization",
-      "label": "Organization"
+      "primLabels":[
+        {
+            "prop":"http://www.w3.org/2000/01/rdf-schema#label",
+            "value":"Organization",
+            "lang":"en"
+        }
+      ]
     }
   ],
   "properties": [],

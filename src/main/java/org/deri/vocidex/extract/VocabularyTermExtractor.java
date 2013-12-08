@@ -6,6 +6,7 @@ import org.deri.vocidex.SPARQLRunner;
 import org.deri.vocidex.VocidexDocument;
 import org.deri.vocidex.describers.ClassDescriber;
 import org.deri.vocidex.describers.DatatypeDescriber;
+import org.deri.vocidex.describers.InstanceDescriber;
 import org.deri.vocidex.describers.SPARQLDescriber;
 import org.deri.vocidex.describers.PropertyDescriber;
 
@@ -52,13 +53,20 @@ public class VocabularyTermExtractor implements Extractor {
 	public Iterator<VocidexDocument> datatypes() {
 		return createDescriptionIterator("list-datatypes.sparql", "datatype", new DatatypeDescriber(source, prefix));
 	}
+	
+	/**
+	 * Extract only instances
+	 */
+	public Iterator<VocidexDocument> instances() {
+		return createDescriptionIterator("list-instances.sparql", "instance", new InstanceDescriber(source, prefix));
+	}
 
 	/**
 	 * Extract all terms (classes, properties, datatypes)
 	 */
 	@Override
 	public Iterator<VocidexDocument> iterator() {
-		return NiceIterator.andThen(classes(), properties()).andThen(datatypes());
+		return NiceIterator.andThen(classes(), properties()).andThen(datatypes()).andThen(instances());
 	}
 	
 	private Iterator<VocidexDocument> createDescriptionIterator(

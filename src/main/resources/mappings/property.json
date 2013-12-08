@@ -1,20 +1,11 @@
 {
   "property": {
     "properties": {
-      "label": {
-        "type": "string",
-        "boost": 3.0
-      },
-      "prefix": {
-        "type": "string",
-        "boost": 3.0
-      },
+      "prefix": { "type": "string", "index": "no" },
 	  "prefixedName":{
         "type":"multi_field",
         "fields":{
-          "prefixedName":{
-            "type":"string"
-          },
+          "prefixedName":{ "type":"string" },
           "autocomplete":{
             "search_analyzer" : "autocomplete_ngram_search",
             "index_analyzer" : "autocomplete_ngram_index",
@@ -25,9 +16,7 @@
 	  "uri":{
         "type":"multi_field",
         "fields":{
-          "uri":{
-            "type":"string"
-          },
+          "uri":{ "type":"string" },
           "autocomplete":{
             "search_analyzer" : "autocomplete_ngram_search",
             "index_analyzer" : "autocomplete_ngram_index",
@@ -38,9 +27,7 @@
 	  "localName":{
         "type":"multi_field",
         "fields":{
-          "localName":{
-            "type":"string"
-          },
+          "localName":{ "type":"string", "boost": 2.0 },
           "autocomplete":{
             "search_analyzer" : "autocomplete_ngram_search",
             "index_analyzer" : "autocomplete_ngram_index",
@@ -48,18 +35,31 @@
           }
         }
       },
-	  "metrics.occurrencesInVocabularies": {
-        "type": "integer"
-	  },
-	  "metrics.occurrencesInDatasets": {
-        "type": "integer"
-	  },
-	  "metrics.reusedByVocabularies": {
-        "type": "integer"
-	  },
-	  "metrics.reusedByDatasets": {
-        "type": "integer"
-	  }
+      "primLabels" : {
+        "properties" : {
+          "value" : {"type" : "string", "boost": 4.0},
+          "prop" : {"type" : "string", "index": "no" },
+          "lang" : {"type" : "string", "index": "no" }
+        }
+      },
+      "secLabels" : {
+        "properties" : {
+          "value" : {"type" : "string", "boost": 2.0},
+          "prop" : {"type" : "string", "index": "no" },
+          "lang" : {"type" : "string", "index": "no" }
+        }
+      },
+      "terLabels" : {
+        "properties" : {
+          "value" : {"type" : "string"},
+          "prop" : {"type" : "string", "index": "no" },
+          "lang" : {"type" : "string", "index": "no" }
+        }
+      },
+	  "metrics.occurrencesInVocabularies": { "type": "integer" },
+	  "metrics.occurrencesInDatasets": { "type": "integer" },
+	  "metrics.reusedByVocabularies": { "type": "integer" },
+	  "metrics.reusedByDatasets": { "type": "integer" }
     }
   }
 }

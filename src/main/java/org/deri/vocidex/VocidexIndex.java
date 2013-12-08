@@ -64,6 +64,7 @@ public class VocidexIndex implements Closeable {
 		if (!setMapping("class", "mappings/class.json")) return false;
 		if (!setMapping("property", "mappings/property.json")) return false;
 		if (!setMapping("datatype", "mappings/datatype.json")) return false;
+		if (!setMapping("instance", "mappings/instance.json")) return false;
 		if (!setMapping("vocabulary", "mappings/vocabulary.json")) return false;
 		
 		return true;

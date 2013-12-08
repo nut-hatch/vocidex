@@ -4,8 +4,25 @@
       "type": "class",
       "uri": "http://www.w3.org/ns/org#Organization",
       "localName": "Organization",
-      "label": "Organization",
-      "comment": "Represents a collection of people organized together into a community or other social, commercial or political structure."
+      "primLabels":[
+        {
+            "prop":"http://www.w3.org/2000/01/rdf-schema#label",
+            "value":"Organization",
+            "lang":"en"
+        }
+      ],
+      "secLabels":[
+        {
+            "prop":"http://www.w3.org/2000/01/rdf-schema#comment",
+            "value":"Represents a collection of people organized together into a community or other social, commercial or political structure.",
+            "lang":"en"
+        },
+        {
+            "prop":"http://www.w3.org/2000/01/rdf-schema#comment",
+            "value":"Représente un groupe de personnes organisées en communauté où tout autre forme de structure sociale, commerciale ou politique.",
+            "lang":"fr"
+        }
+      ]
     }
   ],
   "properties": [],

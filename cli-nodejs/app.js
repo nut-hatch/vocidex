@@ -22,6 +22,46 @@ var indexName = 'lov';
 var client = new ElasticSearchClient({host: 'localhost',port: 9200});
 
 
+function execSearch(queryString, page, type, vocab, callback) {
+  if(!type)type='class,property';
+  if (!page || page<1)page = 1;
+  page = parseInt(page, 10) || 1;
+  var q = {
+		  "from": (page - 1) * pageSize,
+		  "size": pageSize,
+		  "fields" : ["uri", "prefixedName", "localName"],
+		  "query" : {
+			 "multi_match" : {
+				 "query": queryString,
+				 "fields": ["prefixedName.autocomplete","uri.autocomplete"],
+				  "type" : "match_phrase"
+			 }
+		  }
+		};
+  return client.search(indexName, type, q).on('data', function(data) {
+    var hit, parsed, result, x;
+    parsed = JSON.parse(data).hits;
+    result = {
+      total_results: parsed.total,
+      page: page,
+	  page_size: pageSize,
+      results: (function() {
+        var results = [];
+        for (var i = 0; i < parsed.hits.length; i++) {
+          hit = parsed.hits[i];
+          x = hit.fields;
+          x.type = hit._type;
+          x.score = hit._score;
+          results.push(x);
+        }
+        return results;
+      })()
+    };
+    return callback(null, result);
+  }).on('error', function(error) {
+    return callback(error, null);
+  }).exec();
+};
 
 function execSearchTerms(queryString, page, type, callback) {
   if(!type)type='class,property';

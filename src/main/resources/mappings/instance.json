@@ -35,26 +35,38 @@
           }
         }
       },
-      "primLabels" : {
-        "properties" : {
-          "value" : {"type" : "string", "boost": 4.0},
-          "prop" : {"type" : "string", "index": "no" },
-          "lang" : {"type" : "string", "index": "no" }
-        }
+      "http://www.w3.org/2000/01/rdf-schema#label" : {
+        "type" : "string",
+		"boost": 4.0
       },
-      "secLabels" : {
-        "properties" : {
-          "value" : {"type" : "string", "boost": 2.0},
-          "prop" : {"type" : "string", "index": "no" },
-          "lang" : {"type" : "string", "index": "no" }
-        }
+	  "http://purl.org/dc/terms/title" : {
+        "type" : "string",
+		"boost": 4.0
       },
-      "terLabels" : {
-        "properties" : {
-          "value" : {"type" : "string"},
-          "prop" : {"type" : "string", "index": "no" },
-          "lang" : {"type" : "string", "index": "no" }
-        }
+	  "http://purl.org/dc/elements/1.1/title" : {
+        "type" : "string",
+		"boost": 4.0
+      },
+	  "http://www.w3.org/2004/02/skos/core#prefLabel" : {
+        "type" : "string",
+		"boost": 4.0
+      },
+	  
+	  "http://www.w3.org/2000/01/rdf-schema#comment" : {
+        "type" : "string",
+		"boost": 2.0
+      },
+	  "http://purl.org/dc/terms/description" : {
+        "type" : "string",
+		"boost": 2.0
+      },
+	  "http://purl.org/dc/elements/1.1/description" : {
+        "type" : "string",
+		"boost": 2.0
+      },
+	  "http://www.w3.org/2004/02/skos/core#altLabel" : {
+        "type" : "string",
+		"boost": 2.0
       },
 	  "metrics.occurrencesInVocabularies": { "type": "integer" },
 	  "metrics.occurrencesInDatasets": { "type": "integer" },

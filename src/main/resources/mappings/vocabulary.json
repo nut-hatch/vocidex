@@ -25,6 +25,14 @@
           }
         }
       },
+	  "http://purl.org/dc/terms/title*" : {
+        "type" : "string",
+		"boost": 4.0
+      },
+	  "http://purl.org/dc/terms/description*" : {
+        "type" : "string",
+		"boost": 2.0
+      },
       "titles" : {
         "properties" : {
           "value" : {"type" : "string", "boost": 4.0},

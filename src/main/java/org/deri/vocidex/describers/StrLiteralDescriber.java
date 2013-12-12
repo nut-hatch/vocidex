@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.deri.vocidex.JSONHelper;
-import org.deri.vocidex.LovConstants;
 import org.deri.vocidex.SPARQLRunner;
 
 import com.hp.hpl.jena.query.QuerySolution;
@@ -34,48 +33,75 @@ public class StrLiteralDescriber extends SPARQLDescriber {
 		
 		//fetch the String and untyped literals along with properties associated to the term
 		ResultSet rs = getSource().getResultSet("term-strLiterals.sparql", "term", term);
-		ArrayNode arrayPrim = JSONHelper.createArray();
-		ArrayNode arraySec = JSONHelper.createArray();
-		ArrayNode arrayTer = JSONHelper.createArray();
+//		ArrayNode arrayPrim = JSONHelper.createArray();
+//		ArrayNode arraySec = JSONHelper.createArray();
+//		ArrayNode arrayTer = JSONHelper.createArray();
+		
+		ArrayNode array = JSONHelper.createArray();
+		String lastPropLang = "";
 		while(rs.hasNext()){
 			QuerySolution qs2 = rs.next();
 			
 			String property = qs2.get("p").asResource().getURI();
-			ObjectNode node = JSONHelper.createObject();
-			putString(node, "prop", property);
-			putString(node, "value", qs2.get("literal").asLiteral().getLexicalForm());
-			putString(node, "lang", qs2.get("literal").asLiteral().getLanguage());
+			String value = qs2.get("literal").asLiteral().getLexicalForm();
+			String lang = null; //qs2.get("literal").asLiteral().getLanguage();
+			String propLang = (lang!=null&&lang.length()>0 ? property+"@"+lang : property );
 			
-			//primary label
-			if(property.equals(LovConstants.RDFS_FULL_LABEL)
-				|| property.equals(LovConstants.DC_TERMS_FULL_TITLE)
-				|| property.equals(LovConstants.DC_ELEMENT_FULL_TITLE)
-				|| property.equals(LovConstants.SKOS_FULL_PREF_LABEL)){
-				arrayPrim.add(node);
+			//the same property and language, add to the value array
+			if(lastPropLang.equals(propLang)){
+				array.add(value);
 			}
 			else{
-				//secondary Label
-				if(property.equals(LovConstants.RDFS_FULL_COMMENT)
-					|| property.equals(LovConstants.DC_TERMS_FULL_DESCRIPTION)
-					|| property.equals(LovConstants.DC_ELEMENT_FULL_DESCRIPTION)
-					|| property.equals(LovConstants.SKOS_FULL_ALT_LABEL)){
-					arraySec.add(node);
+				//store the last array if not empty
+				if(array.size()>0){
+					putURIArray(descriptionRoot, lastPropLang, array);
 				}
-				else{//all other cases -> tertiary label
-					arrayTer.add(node);
-				}
+				//create new array and update last proplang
+				array = JSONHelper.createArray();
+				array.add(value);
+				lastPropLang=propLang;
 			}
+//				
+//			ObjectNode node = JSONHelper.createObject();
+//			putString(node, "prop", property);
+//			putString(node, "value", qs2.get("literal").asLiteral().getLexicalForm());
+//			putString(node, "lang", qs2.get("literal").asLiteral().getLanguage());
+//			
+			//primary label
+//			if(property.equals(LovConstants.RDFS_FULL_LABEL)
+//				|| property.equals(LovConstants.DC_TERMS_FULL_TITLE)
+//				|| property.equals(LovConstants.DC_ELEMENT_FULL_TITLE)
+//				|| property.equals(LovConstants.SKOS_FULL_PREF_LABEL)){
+//				arrayPrim.add(node);
+//			}
+//			else{
+//				//secondary Label
+//				if(property.equals(LovConstants.RDFS_FULL_COMMENT)
+//					|| property.equals(LovConstants.DC_TERMS_FULL_DESCRIPTION)
+//					|| property.equals(LovConstants.DC_ELEMENT_FULL_DESCRIPTION)
+//					|| property.equals(LovConstants.SKOS_FULL_ALT_LABEL)){
+//					arraySec.add(node);
+//				}
+//				else{//all other cases -> tertiary label
+//					arrayTer.add(node);
+//				}
+//			}
 		}
 		
-		//if no primary label, synthesize one from the URI localName
-		if(arrayPrim.size()==0){
-			ObjectNode node = JSONHelper.createObject();
-			putString(node, "value", synthesizeLabelFromURI(term.getURI()));
-			arrayPrim.add(node);
+		//store the last array if not empty
+		if(array.size()>0){
+			putURIArray(descriptionRoot, lastPropLang, array);
 		}
-		putURIArray(descriptionRoot, "primLabels", arrayPrim);
-		putURIArray(descriptionRoot, "secLabels", arraySec);
-		putURIArray(descriptionRoot, "terLabels", arrayTer);
+		
+//		//if no primary label, synthesize one from the URI localName
+//		if(arrayPrim.size()==0){
+//			ObjectNode node = JSONHelper.createObject();
+//			putString(node, "value", synthesizeLabelFromURI(term.getURI()));
+//			arrayPrim.add(node);
+//		}
+//		putURIArray(descriptionRoot, "primLabels", arrayPrim);
+//		putURIArray(descriptionRoot, "secLabels", arraySec);
+//		putURIArray(descriptionRoot, "terLabels", arrayTer);
 	}
 
 	

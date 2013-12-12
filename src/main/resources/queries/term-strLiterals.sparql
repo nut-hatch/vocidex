@@ -10,4 +10,4 @@ SELECT ?p ?literal {
 }
 # Prefer the main language over others.
 # ?prefLang is an argument to be substituted.
-ORDER BY ASC(IF(LANGMATCHES(LANG(?literal), ?prefLang), 1, 2))
+ORDER BY ?p

@@ -35,7 +35,9 @@ public class IndexLOV extends CmdGeneral {
 
 	private String clusterName;
 	private String hostName;
-	private String indexName;
+	private String vocabularyIndexName;
+	private String classIndexName;
+	private String propertyIndexName;
 	private String lovDumpFile;
 	
 	public IndexLOV(String[] args) {
@@ -43,7 +45,9 @@ public class IndexLOV extends CmdGeneral {
 		getUsage().startCategory("Arguments");
 		getUsage().addUsage("clusterName", "ElasticSearch cluster name (e.g., elasticsearch)");
 		getUsage().addUsage("hostname", "ElasticSearch hostname (e.g., localhost)");
-		getUsage().addUsage("indexName", "Target ElasticSearch index (e.g., lov)");
+		getUsage().addUsage("vocabularyIndexName", "Target ElasticSearch VOCABULARY index (e.g., vocabularies)");
+		getUsage().addUsage("classIndexName", "Target ElasticSearch CLASS index (e.g., classes)");
+		getUsage().addUsage("propertyIndexName", "Target ElasticSearch PROPERTY index (e.g., properties)");
 		getUsage().addUsage("lov.nq", "Filename or URL of the LOV N-Quads dump");
 	}
 	
@@ -59,13 +63,15 @@ public class IndexLOV extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 4) {
+		if (getPositional().size() < 6) {
 			doHelp();
 		}
 		clusterName = getPositionalArg(0);
 		hostName = getPositionalArg(1);
-		indexName = getPositionalArg(2);
-		lovDumpFile = getPositionalArg(3);
+		vocabularyIndexName = getPositionalArg(2);
+		classIndexName = getPositionalArg(3);
+		propertyIndexName = getPositionalArg(4);
+		lovDumpFile = getPositionalArg(5);
 	}
 
 	@Override
@@ -82,25 +88,55 @@ public class IndexLOV extends CmdGeneral {
 			}
 			log.info("Read " + tripleCount + " triples in " + graphCount + " graphs");
 
-			VocidexIndex index = new VocidexIndex(clusterName, hostName, indexName);
-			try {
-				if (!index.exists()) {
-					throw new VocidexException("Index '" + indexName + "' does not exist on the cluster. Create the index first!");
-				}
-				LOVExtractor lovTransformer = new LOVExtractor(dataset);
-				for (VocidexDocument document: lovTransformer) {
-					log.info("Indexing " + document.getId());
-					String resultId = index.addDocument(document);
-					log.debug("Added new " + document.getType() + ", id " + resultId);
-				}
-				log.info("Done!");
-			} finally {
-				index.close();
-			}
+//			String[] types = {"class","property","vocabulary"};
+
+			extractType(dataset,"vocabulary",vocabularyIndexName);
+			extractType(dataset,"class",classIndexName);
+			extractType(dataset,"property",propertyIndexName);
+
+//			VocidexIndex vocabularyIndex = new VocidexIndex(clusterName, hostName, vocabularyIndexName, "vocabulary");
+//
+//			for (String type : types) {
+//				VocidexIndex index = new VocidexIndex(clusterName, hostName, indexName, type);
+//				try {
+//					if (!index.exists()) {
+//						throw new VocidexException("Index '" + indexName + "' does not exist on the cluster. Create the index first!");
+//					}
+//					LOVExtractor lovTransformer = new LOVExtractor(dataset);
+//					for (VocidexDocument document: lovTransformer) {
+//						log.info("Indexing " + document.getId());
+//						String resultId = index.addDocument(document);
+//						log.debug("Added new " + document.getType() + ", id " + resultId);
+//					}
+//					log.info("Done!");
+//				} finally {
+//					index.close();
+//				}
+//			}
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());
 		} catch (VocidexException ex) {
 			cmdError(ex.getMessage());
+		}
+	}
+
+	private void extractType(Dataset dataset, String mappingType, String indexName) {
+		VocidexIndex index = new VocidexIndex(clusterName, hostName, indexName, mappingType);
+		try {
+			if (!index.exists()) {
+				throw new VocidexException("Index '" + indexName + "' does not exist on the cluster. Create the index first!");
+			}
+			LOVExtractor lovTransformer = new LOVExtractor(dataset);
+			for (VocidexDocument document: lovTransformer) {
+			    if (document.getType().equals(mappingType)) {
+                    log.info("Indexing " + document.getId());
+                    String resultId = index.addDocument(document);
+                    log.debug("Added new " + document.getType() + ", id " + resultId);
+                }
+			}
+			log.info("Done!");
+		} finally {
+			index.close();
 		}
 	}
 }

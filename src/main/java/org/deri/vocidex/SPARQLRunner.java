@@ -42,12 +42,14 @@ public class SPARQLRunner {
 	
 	public List<Resource> getURIs(String queryFile, String paramVariable, Resource paramValue, String resultVariable) {
 		Query query = getQuery(queryFile);
+//		System.out.println(query.toString());
 		QuerySolutionMap args = new QuerySolutionMap();
 		if (paramVariable != null && paramValue != null) {
 			args.add(paramVariable, paramValue);
 		}
 		ArrayList<Resource> result = new ArrayList<Resource>();
 		ResultSet rs = QueryExecutionFactory.create(query, dataset, args).execSelect();
+
 		while (rs.hasNext()) {
 			RDFNode n = rs.next().get(resultVariable);
 			if (n == null || !n.isURIResource()) continue;

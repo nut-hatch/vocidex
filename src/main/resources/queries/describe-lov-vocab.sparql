@@ -12,7 +12,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 SELECT ?prefix{
 
   # Check only the LOV metadata graph
-  GRAPH <http://lov.okfn.org/dataset/lov/lov.rdf> {
+  GRAPH <https://lov.linkeddata.es/dataset/lov> {
     ?vocab a voaf:Vocabulary .
     ?vocab vann:preferredNamespacePrefix ?prefix .
   }

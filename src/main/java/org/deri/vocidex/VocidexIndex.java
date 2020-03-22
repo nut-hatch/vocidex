@@ -1,13 +1,16 @@
 package org.deri.vocidex;
 
 import java.io.Closeable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 /**
  * A connection to a specific named index on an ElasticSearch cluster
@@ -18,12 +21,14 @@ public class VocidexIndex implements Closeable {
 	private final String clusterName;
 	private final String hostName;
 	private final String indexName;
+	private final String mappingType;
 	private Client client = null;
 	
-	public VocidexIndex(String clusterName, String hostName, String indexName) {
+	public VocidexIndex(String clusterName, String hostName, String indexName, String mappingType) {
 		this.clusterName = clusterName;
 		this.hostName = hostName;
 		this.indexName = indexName;
+		this.mappingType = mappingType;
 	}
 
 	/**
@@ -32,10 +37,12 @@ public class VocidexIndex implements Closeable {
 	 */
 	public void connect() {
 		if (client != null) return;
-		Settings settings = ImmutableSettings.settingsBuilder()
-		        .put("cluster.name", clusterName).build();
-		client = new TransportClient(settings)
-				.addTransportAddress(new InetSocketTransportAddress(hostName, 9300));
+		Settings settings = Settings.builder().put("cluster.name", clusterName).build();
+		try {
+			client = new PreBuiltTransportClient(settings).addTransportAddress(new TransportAddress(InetAddress.getByName(hostName), 9300));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void close() {
@@ -56,36 +63,47 @@ public class VocidexIndex implements Closeable {
 	
 	public boolean create() {
 		connect();
-		//create index with specific settings
-		if (!client.admin().indices().create(Requests.createIndexRequest(indexName).settings(JSONHelper.readFile("mappings/settings.json"))).actionGet().isAcknowledged()) {
+		if (!client.admin().indices().create(Requests.createIndexRequest(indexName).settings(JSONHelper.readFile("mappings/settings.json"), XContentType.JSON)).actionGet().isAcknowledged()) {
 			return false;
 		}
-		// TODO: Add mappings/common.json for the shared stuff
-		if (!setMapping("class", "mappings/class.json")) return false;
-		if (!setMapping("property", "mappings/property.json")) return false;
-		if (!setMapping("datatype", "mappings/datatype.json")) return false;
-		if (!setMapping("instance", "mappings/instance.json")) return false;
-		if (!setMapping("vocabulary", "mappings/vocabulary.json")) return false;
+
+		String mappingFile = "mappings/"+mappingType+".json";
+		if (!client.admin().indices().preparePutMapping().setIndices(indexName).setType(mappingType).setSource(JSONHelper.readFile(mappingFile), XContentType.JSON).execute().actionGet().isAcknowledged()) {
+			return false;
+		}
+
+//		//create index with specific settings
+//		if (!client.admin().indices().create(Requests.createIndexRequest(indexName).settings(JSONHelper.readFile("mappings/settings.json"))).actionGet().isAcknowledged()) {
+//			return false;
+//		}
+//		// TODO: Add mappings/common.json for the shared stuff
+//		if (!setMapping("class", "mappings/class.json")) return false;
+//		if (!setMapping("property", "mappings/property.json")) return false;
+//		if (!setMapping("datatype", "mappings/datatype.json")) return false;
+//		if (!setMapping("instance", "mappings/instance.json")) return false;
+//		if (!setMapping("vocabulary", "mappings/vocabulary.json")) return false;
 		
 		return true;
 	}
 	
-	public boolean setMapping(String type, String jsonConfigFile) {
-		String json = JSONHelper.readFile(jsonConfigFile);
-		if (!client.admin().indices().preparePutMapping().setIndices(indexName).setType(type).setSource(json).execute().actionGet().isAcknowledged()) {
-			return false;
-		}
-		return true;
-	}
+//	public boolean setMapping(String type, String jsonConfigFile) {
+//		String json = JSONHelper.readFile(jsonConfigFile);
+//		if (!client.admin().indices().preparePutMapping().setIndices(indexName).setType(type).setSource(json).execute().actionGet().isAcknowledged()) {
+//			return false;
+//		}
+//		return true;
+//	}
 	
 	/**
 	 * Adds a document (that is, a JSON structure) to the index.
 	 * @return The document's id
 	 */
 	public String addDocument(VocidexDocument document) {
+//		System.out.println(document.getId());
+//		System.out.println(document.getJSONContents());
 		return client
 				.prepareIndex(indexName, document.getType(), document.getId())
-				.setSource(document.getJSONContents())
+				.setSource(document.getJSONContents(), XContentType.JSON)
 				.execute().actionGet().getId();
 	}
 }

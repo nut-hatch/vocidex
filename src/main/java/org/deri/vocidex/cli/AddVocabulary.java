@@ -91,20 +91,25 @@ public class AddVocabulary extends CmdGeneral {
 				}
 			}, inFile);
 			log.info("Read " + model.size() + " triples");
-			
-			VocidexIndex index = new VocidexIndex(clusterName, hostName, indexName);
-			try {
-				if (!index.exists()) {
-					throw new VocidexException("Index '" + indexName + "' does not exist on the cluster. Create the index first!");
+
+			String[] types = {"class","property","vocabulary"};
+
+			for (String type : types) {
+				VocidexIndex index = new VocidexIndex(clusterName, hostName, indexName, type);
+
+				try {
+					if (!index.exists()) {
+						throw new VocidexException("Index '" + indexName + "' does not exist on the cluster. Create the index first!");
+					}
+					for (VocidexDocument document : new VocabularyTermExtractor(new SPARQLRunner(model), prefix)) {
+						log.info("Indexing " + document.getId());
+						String resultId = index.addDocument(document);
+						log.debug("Added new " + document.getType() + ", id " + resultId);
+					}
+					log.info("Done!");
+				} finally {
+					index.close();
 				}
-				for (VocidexDocument document: new VocabularyTermExtractor(new SPARQLRunner(model), prefix)) {
-					log.info("Indexing " + document.getId());
-					String resultId = index.addDocument(document);
-					log.debug("Added new " + document.getType() + ", id " + resultId);
-				}
-				log.info("Done!");
-			} finally {
-				index.close();
 			}
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());

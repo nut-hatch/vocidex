@@ -1,78 +1,88 @@
 {
   "property": {
     "properties": {
-      "prefix": { "type": "string", "index": "no" },
-	  "prefixedName":{
-        "type":"multi_field",
-        "fields":{
-          "prefixedName":{ "type":"string" },
-          "autocomplete":{
-            "search_analyzer" : "autocomplete_ngram_search",
-            "index_analyzer" : "autocomplete_ngram_index",
-            "type":"string"
+      "prefix": {
+        "type": "text",
+        "index": false
+      },
+      "prefixedName": {
+        "type": "text",
+        "fields": {
+          "autocomplete": {
+            "analyzer": "autocomplete_ngram_search",
+            "search_analyzer": "autocomplete_ngram_index",
+            "type": "text"
           }
         }
       },
-	  "uri":{
-        "type":"multi_field",
-        "fields":{
-          "uri":{ "type":"string" },
-          "autocomplete":{
-            "search_analyzer" : "autocomplete_ngram_search",
-            "index_analyzer" : "autocomplete_ngram_index",
-            "type":"string"
+      "uri": {
+        "type": "text",
+        "fields": {
+          "autocomplete": {
+            "analyzer": "autocomplete_ngram_search",
+            "search_analyzer": "autocomplete_ngram_index",
+            "type": "text"
           }
         }
       },
-	  "localName":{
-        "type":"multi_field",
-        "fields":{
-          "localName":{ "type":"string", "boost": 2.0 },
-          "autocomplete":{
-            "search_analyzer" : "autocomplete_ngram_search",
-            "index_analyzer" : "autocomplete_ngram_index",
-            "type":"string"
+      "localName": {
+        "type": "text",
+        "boost": 2.0,
+        "fields": {
+          "autocomplete": {
+            "analyzer": "autocomplete_ngram_search",
+            "search_analyzer": "autocomplete_ngram_index",
+            "type": "text"
           }
         }
       },
-      "http://www.w3.org/2000/01/rdf-schema#label" : {
-        "type" : "string",
-		"boost": 4.0
+      "vocabulary": {
+        "type": "keyword"
       },
-	  "http://purl.org/dc/terms/title" : {
-        "type" : "string",
-		"boost": 4.0
+      "http://www.w3.org/2000/01/rdf-schema#label": {
+        "type": "text",
+        "boost": 4.0
       },
-	  "http://purl.org/dc/elements/1.1/title" : {
-        "type" : "string",
-		"boost": 4.0
+      "http://purl.org/dc/terms/title": {
+        "type": "text",
+        "boost": 4.0
       },
-	  "http://www.w3.org/2004/02/skos/core#prefLabel" : {
-        "type" : "string",
-		"boost": 4.0
+      "http://purl.org/dc/elements/1.1/title": {
+        "type": "text",
+        "boost": 4.0
       },
-	  
-	  "http://www.w3.org/2000/01/rdf-schema#comment" : {
-        "type" : "string",
-		"boost": 2.0
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "type": "text",
+        "boost": 4.0
       },
-	  "http://purl.org/dc/terms/description" : {
-        "type" : "string",
-		"boost": 2.0
+      "http://www.w3.org/2000/01/rdf-schema#comment": {
+        "type": "text",
+        "boost": 2.0
       },
-	  "http://purl.org/dc/elements/1.1/description" : {
-        "type" : "string",
-		"boost": 2.0
+      "http://purl.org/dc/terms/description": {
+        "type": "text",
+        "boost": 2.0
       },
-	  "http://www.w3.org/2004/02/skos/core#altLabel" : {
-        "type" : "string",
-		"boost": 2.0
+      "http://purl.org/dc/elements/1.1/description": {
+        "type": "text",
+        "boost": 2.0
       },
-	  
-	  "metrics.occurrencesInVocabularies": { "type": "integer" },
-	  "metrics.occurrencesInDatasets": { "type": "integer" },
-	  "metrics.reusedByVocabularies": { "type": "integer" },
-	  "metrics.reusedByDatasets": { "type": "integer" }
+      "http://www.w3.org/2004/02/skos/core#altLabel": {
+        "type": "text",
+        "boost": 2.0
+      },
+      "metrics.occurrencesInVocabularies": {
+        "type": "integer"
+      },
+      "metrics.occurrencesInDatasets": {
+        "type": "integer"
+      },
+      "metrics.reusedByVocabularies": {
+        "type": "integer"
+      },
+      "metrics.reusedByDatasets": {
+        "type": "integer"
+      }
     }
   }
 }

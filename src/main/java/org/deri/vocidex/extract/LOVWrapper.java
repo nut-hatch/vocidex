@@ -37,12 +37,13 @@ public class LOVWrapper extends Filter<VocidexDocument> implements Extractor {
 		this.termMetricsDescriber = termMetricsDescriber;
 		this.vocabularyDescriber = new Describer() {
 			@Override
-			public void describe(Resource resource, ObjectNode descriptionRoot) {
-				ObjectNode v = JSONHelper.createObject();
-				v.putAll(vocabularyDescription);
-				v.remove("shortLabel");
-				v.remove("comment");
-				descriptionRoot.put("vocabulary", v);
+			public void describe(Resource resource, ObjectNode descriptionRoot) { // Elastic does not support "sub types", i.e., an entry of type vocabulary in the class index. Changing to vocabulary uri
+//				ObjectNode v = JSONHelper.createObject();
+//				v.putAll(vocabularyDescription);
+//				v.remove("shortLabel");
+//				v.remove("comment");
+//				descriptionRoot.put("vocabulary", v);
+				descriptionRoot.put("vocabulary", vocabularyDescription.get("uri"));
 			}
 		};
 	}

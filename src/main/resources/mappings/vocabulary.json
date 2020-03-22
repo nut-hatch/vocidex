@@ -1,48 +1,59 @@
 {
   "vocabulary": {
     "properties": {
-	  "prefix":{
-        "type":"multi_field",
-        "fields":{
-          "prefix":{ "type":"string", "boost": 4.0 },
-          "autocomplete":{
-            "search_analyzer" : "autocomplete_ngram_search",
-            "index_analyzer" : "autocomplete_ngram_index",
-            "type":"string"
+      "prefix": {
+        "type": "text",
+        "boost": 4.0,
+        "analyzer": "standard",
+        "fields": {
+          "autocomplete": {
+            "analyzer": "autocomplete_ngram_search",
+            "search_analyzer": "autocomplete_ngram_index",
+            "type": "text"
           }
         }
       },
-	   "uri":{
-        "type":"multi_field",
-        "fields":{
-          "uri":{
-            "type":"string"
+      "uri": {
+        "type": "text",
+        "analyzer": "standard",
+        "fields": {
+          "autocomplete": {
+            "analyzer": "autocomplete_ngram_search",
+            "search_analyzer": "autocomplete_ngram_index",
+            "type": "text"
+          }
+        }
+      },
+      "http://purl.org/dc/terms/title*": {
+        "type": "text",
+        "boost": 4.0
+      },
+      "http://purl.org/dc/terms/description*": {
+        "type": "text",
+        "boost": 2.0
+      },
+      "titles": {
+        "properties": {
+          "value": {
+            "type": "text",
+            "boost": 4.0
           },
-          "autocomplete":{
-            "search_analyzer" : "autocomplete_ngram_search",
-            "index_analyzer" : "autocomplete_ngram_index",
-            "type":"string"
+          "lang": {
+            "type": "keyword",
+            "index": false
           }
         }
       },
-	  "http://purl.org/dc/terms/title*" : {
-        "type" : "string",
-		"boost": 4.0
-      },
-	  "http://purl.org/dc/terms/description*" : {
-        "type" : "string",
-		"boost": 2.0
-      },
-      "titles" : {
-        "properties" : {
-          "value" : {"type" : "string", "boost": 4.0},
-          "lang" : {"type" : "string", "index": "no" }
-        }
-      },
-      "descriptions" : {
-        "properties" : {
-          "value" : {"type" : "string", "boost": 2.0},
-          "lang" : {"type" : "string", "index": "no" }
+      "descriptions": {
+        "properties": {
+          "value": {
+            "type": "text",
+            "boost": 2.0
+          },
+          "lang": {
+            "type": "keyword",
+            "index": false
+          }
         }
       }
     }

@@ -36,8 +36,8 @@
           }
         }
       },
-      "vocabulary": {
-        "type": "keyword"
+      "vocabulary.prefix": {
+          "type": "keyword"
       },
       "http://www.w3.org/2000/01/rdf-schema#label": {
         "type": "text",

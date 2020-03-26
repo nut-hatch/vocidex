@@ -9,9 +9,10 @@ SELECT *{
   # Metrics information are present in lov metrics graph
   GRAPH <https://lov.linkeddata.es/dataset/lov>{
 	# We select the 4 metrics available
-	?term voaf:occurrencesInVocabularies ?occurrencesInVocabularies;
+	?term
 		voaf:occurrencesInDatasets ?occurrencesInDatasets;
-		voaf:reusedByVocabularies ?reusedByVocabularies;
 		voaf:reusedByDatasets ?reusedByDatasets.
+		#voaf:reusedByVocabularies ?reusedByVocabularies;
+		#voaf:occurrencesInVocabularies ?occurrencesInVocabularies;
   }
 }LIMIT 1

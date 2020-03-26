@@ -58,7 +58,7 @@ public class IndexLOV extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + " clusterName hostname indexName lov.nq";
+		return getCommandName() + " clusterName hostname vocabularyIndexName classIndexName propertyIndexName indexName lov.nq";
 	}
 
 	@Override
